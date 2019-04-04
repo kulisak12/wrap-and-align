@@ -24,25 +24,49 @@
 
 package cz.alisma.alej.text.wrapping;
 
-import java.util.Scanner;
+import java.util.List;
 
-public class WrapAndAlign {
-    private static final int MAX_WIDTH = 50;
-
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        ParagraphDetector pd = new ParagraphDetector(input);
-        Aligner aligner = new RightAligner(MAX_WIDTH);
-
-        while (pd.hasNextParagraph()) {
-            Paragraph para = pd.nextParagraph();
-            LinePrinter line = new LinePrinter(System.out, MAX_WIDTH, aligner);
-            while (para.hasNextWord()) {
-                String word = para.nextWord();
-                line.addWord(word);
-            }
-            line.flush();
-            System.out.println();
+/** Adds spaces so that each line has the same width (as in newspapers). */
+public class JustifyAligner implements Aligner {
+	private int finalLength;
+	
+	public JustifyAligner(int finalLength) {
+		this.finalLength = finalLength;
+	}
+	
+    @Override
+    public String format(List<String> words) {
+        StringBuilder result = new StringBuilder();
+        
+        int unmodifiedLength = 0;
+        for (String w : words) {
+            unmodifiedLength += w.length();
         }
+        int spacesToAdd = finalLength - unmodifiedLength;
+        int wordsLeft = words.size();
+        
+        boolean first = true;
+        for (String w : words) {
+            if (!first && wordsLeft > 1) {
+            	int numSpaces = spacesToAdd / (wordsLeft - 1);
+            	result.append(createSpaces(numSpaces));
+            	spacesToAdd -= numSpaces;
+            	wordsLeft--;
+            } else {
+                first = false;
+            }
+            result.append(w);
+        }
+        
+        return result.toString();
     }
+    
+    private String createSpaces(int count) {
+    	String result = "";
+    	for (int i = 0; i < count; i++) {
+    		result += " ";
+    	}
+    	return result;
+    }
+
 }
