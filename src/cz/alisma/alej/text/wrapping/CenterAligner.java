@@ -24,25 +24,42 @@
 
 package cz.alisma.alej.text.wrapping;
 
-import java.util.Scanner;
+import java.util.List;
 
-public class WrapAndAlign {
-    private static final int MAX_WIDTH = 50;
-
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        ParagraphDetector pd = new ParagraphDetector(input);
-        Aligner aligner = new CenterAligner(MAX_WIDTH);
-
-        while (pd.hasNextParagraph()) {
-            Paragraph para = pd.nextParagraph();
-            LinePrinter line = new LinePrinter(System.out, MAX_WIDTH, aligner);
-            while (para.hasNextWord()) {
-                String word = para.nextWord();
-                line.addWord(word);
+/** Adds spaces so that each line has the same width (as in newspapers). */
+public class CenterAligner implements Aligner {
+	private int finalLength;
+	
+	public CenterAligner(int finalLength) {
+		this.finalLength = finalLength;
+	}
+	
+    @Override
+    public String format(List<String> words) {
+        StringBuilder result = new StringBuilder();
+        
+        boolean first = true;
+        for (String w : words) {
+            if (!first) {
+                result.append(" ");
+            } else {
+                first = false;
             }
-            line.flush();
-            System.out.println();
+            result.append(w);
         }
+        
+        int spacesToAdd = (finalLength - result.length()) / 2;
+        result.insert(0, createSpaces(spacesToAdd));
+        
+        return result.toString();
     }
+    
+    private String createSpaces(int count) {
+    	String result = "";
+    	for (int i = 0; i < count; i++) {
+    		result += " ";
+    	}
+    	return result;
+    }
+
 }
