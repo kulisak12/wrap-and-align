@@ -1,3 +1,3 @@
 # Wrap and align
 
-Example application for wrapping and aligning plain text.
+Forked repository to which I add multiple printing options.
