@@ -10,3 +10,8 @@ hs_err_pid*
 
 bin/
 out/
+
+.classpath
+.project
+.settings
+git bash.lnk
