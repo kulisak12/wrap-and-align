@@ -32,7 +32,7 @@ public class WrapAndAlign {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         ParagraphDetector pd = new ParagraphDetector(input);
-        Aligner aligner = new CenterAligner(MAX_WIDTH);
+        Aligner aligner = buildAligner(args);
 
         while (pd.hasNextParagraph()) {
             Paragraph para = pd.nextParagraph();
@@ -44,5 +44,41 @@ public class WrapAndAlign {
             line.flush();
             System.out.println();
         }
+    }
+    
+    private static Aligner buildAligner(String[] args) {
+    	Aligner aligner = new LeftAligner();
+    	int width = MAX_WIDTH;
+    	
+    	// find width switch first
+    	for (int i = 0; i < args.length; i++) {
+    		String arg = args[i];
+    		
+    		if (arg.startsWith("--width=")) {
+    			width = Integer.parseInt(arg.substring(arg.indexOf('=') + 1));
+    			break;
+    		}
+    		else if (arg.equals("-w")) {
+    			width = Integer.parseInt(args[i + 1]);
+    			break;
+    		}
+    	}
+    	
+    	// set aligner type
+    	for (int i = 0; i < args.length; i++) {
+    		String arg = args[i];
+    		
+    		if (arg.equals("--right")) {
+    			aligner = new RightAligner(width);
+    		}
+    		else if (arg.equals("--center") || arg.equals("--centre")) {
+    			aligner = new CenterAligner(width);
+    		}
+    		else if (arg.equals("--justify")) {
+    			aligner = new JustifyAligner(width);
+    		}
+    	}
+    	
+    	return aligner;
     }
 }
