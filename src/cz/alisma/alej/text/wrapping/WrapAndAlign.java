@@ -32,11 +32,12 @@ public class WrapAndAlign {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         ParagraphDetector pd = new ParagraphDetector(input);
-        Aligner aligner = buildAligner(args);
+        int width = getWidth(args);
+        Aligner aligner = buildAligner(args, width);
 
         while (pd.hasNextParagraph()) {
             Paragraph para = pd.nextParagraph();
-            LinePrinter line = new LinePrinter(System.out, MAX_WIDTH, aligner);
+            LinePrinter line = new LinePrinter(System.out, width, aligner);
             while (para.hasNextWord()) {
                 String word = para.nextWord();
                 line.addWord(word);
@@ -46,23 +47,25 @@ public class WrapAndAlign {
         }
     }
     
-    private static Aligner buildAligner(String[] args) {
-    	Aligner aligner = new LeftAligner();
-    	int width = MAX_WIDTH;
-    	
-    	// find width switch first
+    private static int getWidth(String[] args) {
+    	// find width switch
     	for (int i = 0; i < args.length; i++) {
     		String arg = args[i];
     		
     		if (arg.startsWith("--width=")) {
-    			width = Integer.parseInt(arg.substring(arg.indexOf('=') + 1));
-    			break;
+    			return Integer.parseInt(arg.substring(arg.indexOf('=') + 1));
     		}
     		else if (arg.equals("-w")) {
-    			width = Integer.parseInt(args[i + 1]);
-    			break;
+    			return Integer.parseInt(args[i + 1]);
     		}
     	}
+    	
+    	// width not set
+    	return MAX_WIDTH;
+    }
+    
+    private static Aligner buildAligner(String[] args, int width) {
+    	Aligner aligner = new LeftAligner(); // default
     	
     	// set aligner type
     	for (int i = 0; i < args.length; i++) {
