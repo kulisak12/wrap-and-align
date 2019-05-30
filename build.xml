@@ -74,8 +74,7 @@
     <target name="jar"
             depends="compile"
             description="Build application JAR.">
-        <mkdir dir="out/jars" />
-        <jar destfile="out/jars/Zarovnani.jar">
+        <jar destfile="Zarovnani.jar">
             <fileset dir="out/classes" includes="**/*.class" />
             <manifest>
                 <attribute name="Main-Class" value="cz.alisma.alej.text.wrapping.WrapAndAlign" />
